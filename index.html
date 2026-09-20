@@ -976,18 +976,17 @@ const GIST_API   = `https://api.github.com/gists/${GIST_ID}`;
 
 async function gistLoad() {
   try {
-    const r = await fetch(GIST_API, {
-      headers: { Authorization: `token ${GIST_TOKEN}`, Accept: "application/vnd.github.v3+json" }
+    const r = await fetch(`${GIST_API}?access_token=${GIST_TOKEN}`, {
+      headers: { Accept: "application/vnd.github.v3+json" }
     });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const j = await r.json();
     const content = j.files?.[GIST_FILE]?.content;
     if (!content) return null;
     const data = JSON.parse(content);
-    // Cache locally for speed
     localStorage.setItem("wtd_gist_cache", content);
     return data;
   } catch {
-    // Fall back to local cache if offline
     try { return JSON.parse(localStorage.getItem("wtd_gist_cache")); } catch { return null; }
   }
 }
@@ -996,9 +995,9 @@ async function gistSave(data) {
   const content = JSON.stringify(data, null, 2);
   localStorage.setItem("wtd_gist_cache", content);
   try {
-    await fetch(GIST_API, {
+    await fetch(`${GIST_API}?access_token=${GIST_TOKEN}`, {
       method: "PATCH",
-      headers: { Authorization: `token ${GIST_TOKEN}`, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+      headers: { Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
       body: JSON.stringify({ files: { [GIST_FILE]: { content } } })
     });
   } catch { /* saved locally, will sync next time */ }
