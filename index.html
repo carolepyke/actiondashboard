@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -496,7 +495,47 @@
     /* ── Drag styles ── */
     .project-item.dragging { opacity: 0.4; }
     .project-item.drag-over { border-top: 2px solid var(--gold); }
-    /* ── Sections ── */
+    /* ── Media Library ── */
+    .media-library { padding: 32px 40px; max-width: 1100px; }
+    .media-header { margin-bottom: 28px; }
+    .media-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--dark); margin-bottom: 6px; }
+    .media-subtitle { font-size: 14px; color: var(--muted); font-family: 'Jost', sans-serif; }
+    .media-tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid var(--border); padding-bottom: 0; }
+    .media-tab { padding: 10px 20px; border: none; background: none; font-family: 'Jost', sans-serif; font-size: 15px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+    .media-tab.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 500; }
+    .media-upload-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 28px; background: rgba(253,246,232,0.4); }
+    .media-upload-zone:hover { border-color: var(--gold); background: rgba(160,120,32,0.04); }
+    .media-upload-icon { font-size: 32px; margin-bottom: 8px; }
+    .media-upload-label { font-size: 15px; color: var(--muted); font-family: 'Jost', sans-serif; }
+    .media-upload-label strong { color: var(--gold); }
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .media-image-card { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: white; transition: all 0.15s; cursor: pointer; }
+    .media-image-card:hover { box-shadow: 0 6px 24px rgba(44,31,14,0.1); transform: translateY(-2px); }
+    .media-image-thumb { width: 100%; height: 150px; object-fit: cover; display: block; }
+    .media-card-body { padding: 10px 12px; }
+    .media-card-title { font-size: 14px; font-family: 'Jost', sans-serif; font-weight: 500; color: var(--dark); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .media-card-tag { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); font-family: 'Jost', sans-serif; margin-bottom: 4px; }
+    .media-card-note { font-size: 12px; color: var(--muted); font-family: 'Jost', sans-serif; line-height: 1.4; }
+    .media-card-del { float: right; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 12px; padding: 0; opacity: 0; transition: opacity 0.15s; }
+    .media-image-card:hover .media-card-del { opacity: 1; }
+    .media-audio-list { display: flex; flex-direction: column; gap: 12px; }
+    .media-audio-card { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border: 1px solid var(--border); border-radius: 12px; background: white; transition: all 0.15s; }
+    .media-audio-card:hover { box-shadow: 0 4px 16px rgba(44,31,14,0.08); }
+    .media-audio-play { width: 42px; height: 42px; border-radius: 50%; background: var(--gold); border: none; color: white; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+    .media-audio-play:hover { background: #8a6518; }
+    .media-audio-info { flex: 1; min-width: 0; }
+    .media-audio-title { font-size: 15px; font-family: 'Jost', sans-serif; font-weight: 500; color: var(--dark); margin-bottom: 2px; }
+    .media-audio-meta { font-size: 12px; color: var(--muted); font-family: 'Jost', sans-serif; }
+    .media-audio-note { font-size: 12px; color: var(--muted); font-family: 'Jost', sans-serif; font-style: italic; margin-top: 3px; }
+    .media-audio-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 13px; opacity: 0; transition: opacity 0.15s; }
+    .media-audio-card:hover .media-audio-del { opacity: 1; }
+    .media-empty { text-align: center; padding: 48px; color: var(--muted); font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; }
+    /* Upload form modal */
+    .media-form-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-family: 'Jost', sans-serif; display: block; margin-bottom: 6px; margin-top: 14px; }
+    .media-form-input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 14px; font-family: 'Jost', sans-serif; color: var(--dark); outline: none; transition: border-color 0.2s; margin-bottom: 2px; }
+    .media-form-input:focus { border-color: var(--gold); }
+    .media-preview-thumb { width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 4px; }
+    .media-switch-link { font-size: 13px; color: #4A7B9D; font-family: 'Jost', sans-serif; cursor: pointer; margin-bottom: 20px; display: inline-block; }
     .section-block { margin-bottom: 32px; }
     .section-header {
       display: flex; align-items: center; gap: 10px;
@@ -1115,6 +1154,100 @@ const TEAM = [
   { id: "laura",  name: "Laura",  emoji: "🎯", color: "#C0527A" },
 ];
 
+// ── MediaLibrary Component ────────────────────────────────────────────
+function MediaLibrary({ libraryId, libraryTitle, mediaTab, setMediaTab, getMedia, onUpload, onDelete, onUpdate, mediaUploadForm, setMediaUploadForm, onSave, onLightbox, MEDIA_TAGS, currentUser, TEAM }) {
+  const items = getMedia(libraryId);
+  const images = items.filter(i => i.type === "image");
+  const audio  = items.filter(i => i.type === "audio");
+  const audioRefs = React.useRef({});
+
+  function togglePlay(id, src) {
+    const el = audioRefs.current[id];
+    if (!el) return;
+    el.paused ? el.play() : el.pause();
+  }
+
+  return (
+    <div className="media-library">
+      <div className="media-header">
+        <div className="media-title">🗂️ {libraryTitle}</div>
+        <div className="media-subtitle">{images.length} image{images.length!==1?"s":""} · {audio.length} audio file{audio.length!==1?"s":""}</div>
+      </div>
+
+      <div className="media-tabs">
+        <button className={`media-tab${mediaTab==="images"?" active":""}`} onClick={()=>setMediaTab("images")}>🖼️ Images ({images.length})</button>
+        <button className={`media-tab${mediaTab==="audio"?" active":""}`} onClick={()=>setMediaTab("audio")}>🎵 Audio ({audio.length})</button>
+      </div>
+
+      {/* Upload zone */}
+      <div className="media-upload-zone" onClick={()=>document.getElementById(`media-upload-${libraryId}`).click()}
+        onDragOver={e=>{e.preventDefault();e.currentTarget.style.borderColor="var(--gold)";}}
+        onDragLeave={e=>{e.currentTarget.style.borderColor="var(--border)";}}
+        onDrop={e=>{e.preventDefault();e.currentTarget.style.borderColor="var(--border)";const f=e.dataTransfer.files[0];if(f)onUpload(libraryId,f);}}>
+        <div className="media-upload-icon">{mediaTab==="images"?"🖼️":"🎵"}</div>
+        <div className="media-upload-label">Drag & drop or <strong>click to upload</strong></div>
+        <div className="media-upload-label" style={{fontSize:12,marginTop:4}}>{mediaTab==="images"?"JPG, PNG, GIF, WEBP":"MP3, M4A, WAV, OGG"}</div>
+        <input id={`media-upload-${libraryId}`} type="file"
+          accept={mediaTab==="images"?"image/*":"audio/*"}
+          style={{display:"none"}} onChange={e=>{if(e.target.files[0])onUpload(libraryId,e.target.files[0]);e.target.value="";}}/>
+      </div>
+
+      {/* Images grid */}
+      {mediaTab==="images" && (
+        images.length===0
+          ? <div className="media-empty">No images yet — upload one above to get started</div>
+          : <div className="media-grid">
+              {images.map(item=>(
+                <div key={item.id} className="media-image-card">
+                  <img className="media-image-thumb" src={item.data} alt={item.title} onClick={()=>onLightbox(item.data)}/>
+                  <div className="media-card-body">
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+                      <div className="media-card-tag">{item.tag}</div>
+                      <button className="media-card-del" onClick={()=>onDelete(libraryId,item.id)}>✕</button>
+                    </div>
+                    <div className="media-card-title">{item.title}</div>
+                    {item.desc && <div className="media-card-note">{item.desc}</div>}
+                    {item.note && <div className="media-card-note" style={{marginTop:3,fontStyle:"italic"}}>"{item.note}"</div>}
+                    {item.addedBy && TEAM && (
+                      <div style={{fontSize:11,color:"var(--muted)",marginTop:4,fontFamily:"'Jost',sans-serif"}}>
+                        {TEAM.find(m=>m.id===item.addedBy)?.emoji} {TEAM.find(m=>m.id===item.addedBy)?.name}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+      )}
+
+      {/* Audio list */}
+      {mediaTab==="audio" && (
+        audio.length===0
+          ? <div className="media-empty">No audio files yet — upload one above</div>
+          : <div className="media-audio-list">
+              {audio.map(item=>(
+                <div key={item.id} className="media-audio-card">
+                  <button className="media-audio-play" onClick={()=>togglePlay(item.id,item.data)}>▶</button>
+                  <audio ref={el=>audioRefs.current[item.id]=el} src={item.data} style={{display:"none"}}
+                    onPlay={e=>{e.currentTarget.closest(".media-audio-play")&&(e.currentTarget.closest(".media-audio-card").querySelector(".media-audio-play").textContent="⏸");}}/>
+                  <div className="media-audio-info">
+                    <div className="media-audio-title">{item.title}</div>
+                    <div className="media-audio-meta">{item.tag} · {item.size}</div>
+                    {item.note && <div className="media-audio-note">"{item.note}"</div>}
+                  </div>
+                  {item.addedBy && TEAM && (
+                    <div style={{fontSize:12,color:"var(--muted)",fontFamily:"'Jost',sans-serif"}}>
+                      {TEAM.find(m=>m.id===item.addedBy)?.emoji}
+                    </div>
+                  )}
+                  <button className="media-audio-del" onClick={()=>onDelete(libraryId,item.id)}>✕</button>
+                </div>
+              ))}
+            </div>
+      )}
+    </div>
+  );
+}
+
 // ── App ───────────────────────────────────────────────────────────────
 function App() {
   const [currentUser, setCurrentUser] = useState(null); // TEAM member object
@@ -1126,6 +1259,11 @@ function App() {
   const [done, setDone]             = useState([]);
   const [view, setView]             = useState("visual");
   const [showEvidence, setShowEvidence] = useState(false);
+  const [showMedia, setShowMedia]       = useState(null); // null | "shared" | projectId
+  const [mediaTab, setMediaTab]         = useState("images"); // "images" | "audio"
+  const [mediaItems, setMediaItems]     = useState({}); // { [libraryId]: [{id,type,title,desc,tag,note,data,name,size}] }
+  const [mediaUploadForm, setMediaUploadForm] = useState(null); // pending upload item
+  const [mediaLightbox, setMediaLightbox]     = useState(null);
   const [expandedNotes, setExpandedNotes] = useState({});
   const [lightboxSrc, setLightboxSrc] = useState(null);
   const [calView, setCalView]         = useState("month"); // "month" | "week"
@@ -1229,15 +1367,14 @@ function App() {
   }, [showPrintMenu]);
 
   // Save to Gist (debounced so it doesn't fire on every keystroke)
-  function syncToGist(projs, projId, projActions, projDone) {
+  function syncToGist(projs, projId, projActions, projDone, projSections) {
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       setSyncMsg("Saving…");
-      // Gather all project data
       const allProjs = projs || projects;
       const projectData = allProjs.map(p => {
         const d = p.id === projId
-          ? { actions: projActions ?? actions, done: projDone ?? done }
+          ? { actions: projActions ?? actions, done: projDone ?? done, sections: projSections ?? sections }
           : (loadProject(p.id) || {});
         return { id: p.id, d };
       });
@@ -1252,10 +1389,34 @@ function App() {
   useEffect(() => {
     if (!activeId) return;
     saveProject(activeId, { actions, done, sections });
-    syncToGist(null, activeId, actions, done);
+    syncToGist(null, activeId, actions, done, sections);
   }, [actions, done, sections, activeId]);
 
-  function enter(n) { /* no longer used */ }
+  async function forceRefresh() {
+    setSyncMsg("Syncing…");
+    const data = await gistLoad();
+    if (data) {
+      const projs = data.projects || [];
+      if (data.projectData) {
+        data.projectData.forEach(({id, d}) => saveProject(id, d));
+      }
+      saveProjects(projs);
+      setProjects(projs);
+      // Reload active project if open
+      if (activeId) {
+        const d = loadProject(activeId);
+        setSections(d?.sections || []);
+        setActions(d?.actions || []);
+        setDone(d?.done || []);
+      }
+      setSyncMsg("✓ Synced");
+      setLastSynced(new Date());
+      setTimeout(() => setSyncMsg(""), 2000);
+    } else {
+      setSyncMsg("⚠ Could not reach server");
+      setTimeout(() => setSyncMsg(""), 3000);
+    }
+  }
 
   function createProject() {
     if (!newProjName.trim()) return;
@@ -1355,7 +1516,53 @@ function App() {
     syncToGist(updated, activeId, actions, done);
   }
 
-  // ── Section functions ──
+  // ── Media Library ──────────────────────────────────────────────
+  const MEDIA_TAGS = ["Inspiration","Brand","Campaign","Voice Note","Reference","Mood Board","Strategy","Personal"];
+
+  function loadMedia(libraryId) {
+    try { return JSON.parse(localStorage.getItem(`wtd_media_${libraryId}`)||"[]"); } catch { return []; }
+  }
+  function saveMedia(libraryId, items) {
+    localStorage.setItem(`wtd_media_${libraryId}`, JSON.stringify(items));
+  }
+  function getMedia(libraryId) {
+    return mediaItems[libraryId] || loadMedia(libraryId);
+  }
+  function handleMediaUpload(libraryId, file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const type = file.type.startsWith("audio") ? "audio" : "image";
+      setMediaUploadForm({
+        libraryId, type,
+        data: e.target.result,
+        name: file.name,
+        size: (file.size/1024).toFixed(0) + "KB",
+        title: file.name.replace(/\.[^/.]+$/, ""),
+        desc: "", tag: MEDIA_TAGS[0], note: "",
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+  function saveMediaItem() {
+    if (!mediaUploadForm) return;
+    const { libraryId, ...item } = mediaUploadForm;
+    const newItem = { ...item, id: Date.now(), addedBy: currentUser?.id, addedAt: new Date().toISOString() };
+    const existing = getMedia(libraryId);
+    const updated = [newItem, ...existing];
+    saveMedia(libraryId, updated);
+    setMediaItems(p => ({...p, [libraryId]: updated}));
+    setMediaUploadForm(null);
+  }
+  function deleteMediaItem(libraryId, itemId) {
+    const updated = getMedia(libraryId).filter(i => i.id !== itemId);
+    saveMedia(libraryId, updated);
+    setMediaItems(p => ({...p, [libraryId]: updated}));
+  }
+  function updateMediaItem(libraryId, itemId, field, val) {
+    const updated = getMedia(libraryId).map(i => i.id===itemId ? {...i, [field]: val} : i);
+    saveMedia(libraryId, updated);
+    setMediaItems(p => ({...p, [libraryId]: updated}));
+  }
   function addSection() {
     const id = "sec_" + Date.now();
     setSections(p => [...p, { id, title: "New Section" }]);
@@ -1569,7 +1776,7 @@ function App() {
   const monthGroups   = groupByMonth(done);
 
   // ── Home screen (shown when no project selected) ──
-  const showHome = loaded && !activeId;
+  const showHome = loaded && !activeId && !showMedia;
 
   if (!loaded) return null;
 
@@ -1685,23 +1892,48 @@ function App() {
         <button className="new-project-btn" onClick={()=>setShowNewProj(true)}>
           + New project
         </button>
+        <button className="new-project-btn" style={{marginTop:6,background:"rgba(74,123,157,0.08)",color:"#4A7B9D",borderColor:"rgba(74,123,157,0.2)"}} onClick={()=>{setShowMedia("shared");setActiveId(null);}}>
+          🗂️ Media Library
+        </button>
 
         <div className="sidebar-footer">
           Your Sparkle is the key that opens doors
-          {syncMsg && <div style={{fontSize:12,marginTop:6,color:syncMsg.includes("✓")?"#27AE60":"var(--gold)",fontFamily:"'Jost',sans-serif"}}>{syncMsg}</div>}
+          {syncMsg && <div style={{fontSize:12,marginTop:6,color:syncMsg.includes("✓")?"#27AE60":syncMsg.includes("⚠")?"#C0392B":"var(--gold)",fontFamily:"'Jost',sans-serif"}}>{syncMsg}</div>}
           {!syncMsg && lastSynced && (
             <div style={{fontSize:11,marginTop:6,color:"var(--muted)",fontFamily:"'Jost',sans-serif"}}>
               Last synced {lastSynced.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}
             </div>
           )}
+          <button onClick={forceRefresh} style={{marginTop:8,fontSize:11,background:"none",border:"1px solid var(--border)",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:"'Jost',sans-serif",color:"var(--muted)",width:"100%"}}>
+            ↻ Refresh from cloud
+          </button>
         </div>
       </div>
 
       {/* ── MAIN ── */}
       <div className="main">
 
-        {showHome ? (
-          // ── HOME SCREEN ──
+        {showMedia ? (
+          // ── MEDIA LIBRARY SCREEN ──
+          <div>
+            <div style={{padding:"24px 40px 0",display:"flex",alignItems:"center",gap:12}}>
+              <button onClick={()=>setShowMedia(null)} style={{background:"none",border:"1px solid var(--border)",borderRadius:8,padding:"6px 14px",cursor:"pointer",fontFamily:"'Jost',sans-serif",fontSize:13,color:"var(--muted)"}}>← Back</button>
+              {showMedia!=="shared" && (
+                <button onClick={()=>setShowMedia("shared")} className="media-switch-link">Switch to Shared Library</button>
+              )}
+            </div>
+            <MediaLibrary
+              libraryId={showMedia}
+              libraryTitle={showMedia==="shared" ? "Shared Media Library" : (projects.find(p=>p.id===showMedia)?.name||"Project") + " — Media"}
+              mediaTab={mediaTab} setMediaTab={setMediaTab}
+              getMedia={getMedia} onUpload={handleMediaUpload} onDelete={deleteMediaItem}
+              onUpdate={updateMediaItem} mediaUploadForm={mediaUploadForm}
+              setMediaUploadForm={setMediaUploadForm} onSave={saveMediaItem}
+              onLightbox={setMediaLightbox} MEDIA_TAGS={MEDIA_TAGS}
+              currentUser={currentUser} TEAM={TEAM}
+            />
+          </div>
+        ) : showHome ? (
           projects.length === 0 ? (
             <div className="home">
               <div className="home-empty">
@@ -2173,7 +2405,8 @@ function App() {
 
             <div className="footer">
               <em>Your Sparkle is the key that opens doors</em>
-              Words That Deliver · The Personal Brand Strategy Studio · © Carole Pyke
+              <button onClick={()=>setShowMedia(activeId)} style={{background:"none",border:"1px solid var(--border)",borderRadius:8,padding:"6px 14px",cursor:"pointer",fontFamily:"'Jost',sans-serif",fontSize:13,color:"var(--muted)",marginLeft:16}}>🗂️ Project Media Library</button>
+              <br/>Words That Deliver · The Personal Brand Strategy Studio · © Carole Pyke
             </div>
           </>
         )}
@@ -2230,6 +2463,38 @@ function App() {
               <button className="delete-modal-cancel" onClick={()=>setDeletePrompt(null)}>Cancel</button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ── MEDIA UPLOAD FORM MODAL ── */}
+      {mediaUploadForm && (
+        <div className="delete-modal-overlay" onClick={()=>setMediaUploadForm(null)}>
+          <div className="delete-modal" style={{maxWidth:480}} onClick={e=>e.stopPropagation()}>
+            <h3>{mediaUploadForm.type==="image"?"🖼️ Add Image":"🎵 Add Audio"}</h3>
+            {mediaUploadForm.type==="image" && <img className="media-preview-thumb" src={mediaUploadForm.data} alt="preview"/>}
+            {mediaUploadForm.type==="audio" && <div style={{fontSize:13,color:"var(--muted)",fontFamily:"'Jost',sans-serif",marginBottom:8}}>🎵 {mediaUploadForm.name} ({mediaUploadForm.size})</div>}
+            <label className="media-form-label">Title</label>
+            <input className="media-form-input" value={mediaUploadForm.title} onChange={e=>setMediaUploadForm(p=>({...p,title:e.target.value}))} placeholder="Give it a title…"/>
+            <label className="media-form-label">Description</label>
+            <input className="media-form-input" value={mediaUploadForm.desc} onChange={e=>setMediaUploadForm(p=>({...p,desc:e.target.value}))} placeholder="What is this?"/>
+            <label className="media-form-label">Tag / Category</label>
+            <select className="media-form-input" value={mediaUploadForm.tag} onChange={e=>setMediaUploadForm(p=>({...p,tag:e.target.value}))}>
+              {MEDIA_TAGS.map(t=><option key={t} value={t}>{t}</option>)}
+            </select>
+            <label className="media-form-label">Note</label>
+            <input className="media-form-input" value={mediaUploadForm.note} onChange={e=>setMediaUploadForm(p=>({...p,note:e.target.value}))} placeholder="Any thoughts or context…"/>
+            <div style={{display:"flex",gap:8,marginTop:18}}>
+              <button className="card-edit-save" style={{padding:"10px 22px",fontSize:14}} onClick={saveMediaItem}>Save to library</button>
+              <button className="card-edit-cancel" style={{padding:"10px 22px",fontSize:14}} onClick={()=>setMediaUploadForm(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── MEDIA LIGHTBOX ── */}
+      {mediaLightbox && (
+        <div className="lightbox" onClick={()=>setMediaLightbox(null)}>
+          <img src={mediaLightbox} alt="full size" style={{maxWidth:"90vw",maxHeight:"90vh",borderRadius:8,boxShadow:"0 20px 60px rgba(0,0,0,0.4)"}}/>
         </div>
       )}
 
