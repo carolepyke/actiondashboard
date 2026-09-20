@@ -1296,10 +1296,19 @@ function App() {
     setSyncing(true);
     setSyncMsg("Syncing…");
     gistLoad().then(data => {
-      let projs = (data?.projects) || loadProjects();
+      if (!data) {
+        // Gist returned nothing — show error, try localStorage fallback
+        setSyncMsg("⚠️ Sync failed — tap to retry");
+        setSyncing(false);
+        const localProjs = loadProjects();
+        setProjects(localProjs);
+        setLoaded(true);
+        return;
+      }
+      let projs = data.projects || loadProjects();
 
       // Restore all project data to localStorage for fast access
-      if (data?.projectData) {
+      if (data.projectData) {
         data.projectData.forEach(({id, d}) => saveProject(id, d));
       }
       saveProjects(projs);
@@ -1308,7 +1317,13 @@ function App() {
       setSyncing(false);
       setSyncMsg("✓ Synced");
       setLastSynced(new Date());
-      setTimeout(() => setSyncMsg(""), 2000);
+      setTimeout(() => setSyncMsg(""), 3000);
+    }).catch(() => {
+      setSyncMsg("⚠️ Sync failed — tap to retry");
+      setSyncing(false);
+      const localProjs = loadProjects();
+      setProjects(localProjs);
+      setLoaded(true);
     });
   }, []);
 
@@ -1898,7 +1913,26 @@ function App() {
 
         <div className="sidebar-footer">
           Your Sparkle is the key that opens doors
-          {syncMsg && <div style={{fontSize:12,marginTop:6,color:syncMsg.includes("✓")?"#27AE60":syncMsg.includes("⚠")?"#C0392B":"var(--gold)",fontFamily:"'Jost',sans-serif"}}>{syncMsg}</div>}
+          {syncMsg && (
+            <div
+              style={{fontSize:12,marginTop:6,fontFamily:"'Jost',sans-serif",
+                color:syncMsg.includes("✓")?"#27AE60":syncMsg.includes("⚠️")?"#C0392B":"var(--gold)",
+                cursor:syncMsg.includes("⚠️")?"pointer":"default",
+                textDecoration:syncMsg.includes("⚠️")?"underline":"none"}}
+              onClick={syncMsg.includes("⚠️") ? ()=>{
+                setSyncMsg("Syncing…");
+                gistLoad().then(data=>{
+                  if(data){
+                    const projs=data.projects||[];
+                    if(data.projectData) data.projectData.forEach(({id,d})=>saveProject(id,d));
+                    saveProjects(projs); setProjects(projs);
+                    setSyncMsg("✓ Synced"); setLastSynced(new Date());
+                    setTimeout(()=>setSyncMsg(""),3000);
+                  } else { setSyncMsg("⚠️ Sync failed — tap to retry"); }
+                }).catch(()=>setSyncMsg("⚠️ Sync failed — tap to retry"));
+              } : undefined}
+            >{syncMsg}</div>
+          )}
           {!syncMsg && lastSynced && (
             <div style={{fontSize:11,marginTop:6,color:"var(--muted)",fontFamily:"'Jost',sans-serif"}}>
               Last synced {lastSynced.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}
