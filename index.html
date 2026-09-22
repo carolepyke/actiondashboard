@@ -1287,9 +1287,11 @@ function App() {
       let projs = data.projects || loadProjects();
 
       // Restore all project data to localStorage for fast access
-      if (data.projectData) {
-        data.projectData.forEach(({id, d}) => saveProject(id, d));
-      }
+if (data.projectData) {
+  data.projectData.forEach(({id, d}) => {
+    if (d && d.actions) saveProject(id, d);
+  });
+}
       saveProjects(projs);
       setProjects(projs);
       setLoaded(true);
