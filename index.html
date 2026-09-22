@@ -966,27 +966,16 @@ const PROMPTS = [
 ];
 
 // ── GitHub Gist Sync ─────────────────────────────────────────────────
-const GIST_ID    = "8d4ff48a6b34995723c34c67d44429f9";
-// Token stored in two parts to prevent scanning — joined at runtime
-const _t1 = "ghp_16tnp0YXXWs2cbD8A";
-const _t2 = "niJLk1fHpSVBW4eBJA7";
-const GIST_TOKEN = _t1 + _t2;
-const GIST_FILE  = "wtd-data.json";
-const GIST_API   = `https://api.github.com/gists/${GIST_ID}`;
+  const WORKER_URL = "https://wtd-gist-proxy.carole-2a2.workers.dev";
 
 async function gistLoad() {
   try {
-    const r = await fetch(`${GIST_API}?access_token=${GIST_TOKEN}`, {
-      headers: { Accept: "application/vnd.github.v3+json" }
-    });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const j = await r.json();
-    const content = j.files?.[GIST_FILE]?.content;
-    if (!content) return null;
-    const data = JSON.parse(content);
-    localStorage.setItem("wtd_gist_cache", content);
+    const r = await fetch(WORKER_URL);
+    const txt = await r.text();
+    const data = JSON.parse(txt);
+    localStorage.setItem("wtd_gist_cache", txt);
     return data;
-  } catch {
+  } catch(e) {
     try { return JSON.parse(localStorage.getItem("wtd_gist_cache")); } catch { return null; }
   }
 }
@@ -995,18 +984,9 @@ async function gistSave(data) {
   const content = JSON.stringify(data, null, 2);
   localStorage.setItem("wtd_gist_cache", content);
   try {
-    await fetch(`${GIST_API}?access_token=${GIST_TOKEN}`, {
-      method: "PATCH",
-      headers: { Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
-      body: JSON.stringify({ files: { [GIST_FILE]: { content } } })
-    });
-  } catch { /* saved locally, will sync next time */ }
+    await fetch(WORKER_URL, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: content });
+  } catch(e) {}
 }
-
-// ── Local helpers (for reading project data quickly within session) ───
-const STORE_KEY = (id) => `wtd_dash_${id}`;
-const PROJECTS_KEY = "wtd_projects";
-function loadProjects() { try { return JSON.parse(localStorage.getItem(PROJECTS_KEY)) || []; } catch { return []; } }
 function saveProjects(p){ try { localStorage.setItem(PROJECTS_KEY, JSON.stringify(p)); } catch {} }
 function loadProject(id){ try { return JSON.parse(localStorage.getItem(STORE_KEY(id))); } catch { return null; } }
 function saveProject(id,d){ try { localStorage.setItem(STORE_KEY(id), JSON.stringify(d)); } catch {} }
