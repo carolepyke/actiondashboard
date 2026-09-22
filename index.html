@@ -1371,7 +1371,7 @@ if (data.projectData) {
       const projectData = allProjs.map(p => {
         const d = p.id === projId
           ? { actions: projActions ?? actions, done: projDone ?? done, sections: projSections ?? sections }
-          : (loadProject(p.id) || {});
+          : (loadProject(p.id) || { actions: [], done: [], sections: [] });
         return { id: p.id, d };
       });
       await gistSave({ projects: allProjs, projectData });
