@@ -987,7 +987,9 @@ async function gistSave(data) {
   const r = await fetch(WORKER_URL, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: content });
   if (!r.ok) throw new Error("gistSave failed: " + r.status);
 }
-function saveProjects(p){ try { localStorage.setItem(PROJECTS_KEY, JSON.stringify(p)); } catch {} }
+const PROJECTS_KEY = "wtd_dash_projects";
+const STORE_KEY = id => `wtd_dash_${id}`;
+function loadProjects(){ try { return JSON.parse(localStorage.getItem(PROJECTS_KEY)) || []; } catch { return []; } }function saveProjects(p){ try { localStorage.setItem(PROJECTS_KEY, JSON.stringify(p)); } catch {} }
 function loadProject(id){ try { return JSON.parse(localStorage.getItem(STORE_KEY(id))); } catch { return null; } }
 function saveProject(id,d){ try { localStorage.setItem(STORE_KEY(id), JSON.stringify(d)); } catch {} }
 
