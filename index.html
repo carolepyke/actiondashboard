@@ -931,6 +931,65 @@
 
 <div id="root"></div>
 
+<script>
+(function(){
+var K='wtd-dash-sb', cfg=JSON.parse(localStorage.getItem(K)||'{}');
+function save(){localStorage.setItem(K,JSON.stringify(cfg));}
+async function auth(body,grant){
+  var r=await fetch(cfg.url+'/auth/v1/token?grant_type='+grant,{method:'POST',headers:{apikey:cfg.key,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  var d=await r.json();
+  if(!r.ok) throw new Error(d.error_description||d.msg||'Sign in failed');
+  cfg.access=d.access_token;cfg.refresh=d.refresh_token;cfg.uid=d.user.id;cfg.exp=Date.now()+d.expires_in*1000-60000;save();
+}
+window.sbUid=function(){return cfg.refresh?cfg.uid:null;};
+window.sbApi=async function(path,opt){
+  if(Date.now()>cfg.exp) await auth({refresh_token:cfg.refresh},'refresh_token');
+  opt=opt||{};
+  opt.headers=Object.assign({apikey:cfg.key,Authorization:'Bearer '+cfg.access,'Content-Type':'application/json'},opt.headers||{});
+  var r=await fetch(cfg.url+'/rest/v1/'+path,opt);
+  if(!r.ok) throw new Error('Supabase '+r.status+': '+(await r.text()));
+  var t=await r.text();return t?JSON.parse(t):null;
+};
+function q(v){return String(v||'').replace(/"/g,'&quot;');}
+function panel(){
+  if(document.getElementById('sb-panel')) return;
+  var o=document.createElement('div');o.id='sb-panel';
+  o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  var f='width:100%;font-size:17px;font-family:Jost,sans-serif;padding:12px 14px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;';
+  var l='display:block;font-size:16px;font-weight:600;color:#A07820;margin-bottom:5px;';
+  o.innerHTML='<div style="background:#fff;border-radius:12px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:28px;font-family:Jost,sans-serif;">'
+   +'<div style="font-size:28px;font-weight:600;color:#2C1F0E;margin-bottom:6px;">Sync across devices</div>'
+   +'<p style="font-size:17px;line-height:1.7;margin-bottom:16px;">Sign in with the same Supabase login on every device.</p>'
+   +'<label style="'+l+'">Supabase project URL</label><input id="d-url" style="'+f+'" placeholder="https://xxxx.supabase.co" value="'+q(cfg.url)+'">'
+   +'<label style="'+l+'">Anon (public) key</label><input id="d-key" style="'+f+'" value="'+q(cfg.key)+'">'
+   +'<label style="'+l+'">Email</label><input id="d-email" type="email" style="'+f+'" value="'+q(cfg.email)+'">'
+   +'<label style="'+l+'">Password</label><input id="d-pass" type="password" style="'+f+'">'
+   +'<div id="d-msg" style="font-size:17px;font-weight:600;margin-bottom:14px;min-height:24px;color:#27AE60;">'+(cfg.refresh?'Signed in':'Not signed in')+'</div>'
+   +'<div style="display:flex;gap:10px;flex-wrap:wrap;">'
+   +'<button id="d-in" style="padding:13px 22px;font-size:16px;font-weight:600;background:#A07820;color:#fff;border:none;border-radius:8px;cursor:pointer;">Sign in and sync</button>'
+   +'<button id="d-out" style="padding:13px 22px;font-size:16px;background:#fff;border:1px solid #ddd;border-radius:8px;cursor:pointer;">Sign out</button>'
+   +'<button id="d-x" style="padding:13px 22px;font-size:16px;background:#fff;border:1px solid #ddd;border-radius:8px;cursor:pointer;">Close</button></div></div>';
+  document.body.appendChild(o);
+  document.getElementById('d-x').onclick=function(){o.remove();};
+  document.getElementById('d-out').onclick=function(){cfg.access=cfg.refresh=cfg.uid='';save();location.reload();};
+  document.getElementById('d-in').onclick=async function(){
+    cfg.url=document.getElementById('d-url').value.trim().replace(/\/+$/,'');
+    cfg.key=document.getElementById('d-key').value.trim();
+    cfg.email=document.getElementById('d-email').value.trim();
+    var m=document.getElementById('d-msg');
+    try{m.style.color='#A07820';m.textContent='Signing in...';await auth({email:cfg.email,password:document.getElementById('d-pass').value},'password');location.reload();}
+    catch(e){m.style.color='#C0392B';m.textContent='Sign in failed: '+e.message;}
+  };
+}
+var b=document.createElement('button');
+b.className='no-print';
+b.textContent='\u21C5 Sync';
+b.style.cssText='position:fixed;right:16px;bottom:16px;z-index:1500;padding:12px 20px;font-size:16px;font-weight:600;background:#fff;color:#A07820;border:1px solid #A07820;border-radius:10px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.12);';
+b.onclick=panel;document.body.appendChild(b);
+if(!cfg.refresh) setTimeout(panel,1200);
+})();
+</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
@@ -966,15 +1025,22 @@ const PROMPTS = [
   "What would future you thank you for doing today?",
 ];
 
-// ── GitHub Gist Sync ─────────────────────────────────────────────────
-  const WORKER_URL = "https://wtd-gist-proxy.carole-2a2.workers.dev";
+// ── Supabase Sync (replaces the old GitHub Gist sync) ───────────────
+const OLD_WORKER = "https://wtd-gist-proxy.carole-2a2.workers.dev";
 
 async function gistLoad() {
+  if (!window.sbUid()) return null;
   try {
-    const r = await fetch(WORKER_URL);
-    const txt = await r.text();
-    const data = JSON.parse(txt);
-    localStorage.setItem("wtd_gist_cache", txt);
+    const rows = await window.sbApi("dashboard_state?select=data&user_id=eq." + window.sbUid());
+    let data = rows && rows.length ? rows[0].data : null;
+    if (!data) {
+      // First sign-in: copy everything across from the old Gist
+      try {
+        data = JSON.parse(await (await fetch(OLD_WORKER)).text());
+        await gistSave(data);
+      } catch(e) { data = null; }
+    }
+    if (data) localStorage.setItem("wtd_gist_cache", JSON.stringify(data));
     return data;
   } catch(e) {
     try { return JSON.parse(localStorage.getItem("wtd_gist_cache")); } catch { return null; }
@@ -982,10 +1048,13 @@ async function gistLoad() {
 }
 
 async function gistSave(data) {
-  const content = JSON.stringify(data, null, 2);
-  localStorage.setItem("wtd_gist_cache", content);
-  const r = await fetch(WORKER_URL, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: content });
-  if (!r.ok) throw new Error("gistSave failed: " + r.status);
+  localStorage.setItem("wtd_gist_cache", JSON.stringify(data));
+  if (!window.sbUid()) throw new Error("Not signed in");
+  await window.sbApi("dashboard_state?on_conflict=user_id", {
+    method: "POST",
+    headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify({ user_id: window.sbUid(), data: data, updated_at: new Date().toISOString() })
+  });
 }
 const PROJECTS_KEY = "wtd_dash_projects";
 const STORE_KEY = id => `wtd_dash_${id}`;
